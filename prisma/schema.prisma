@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  login     String     @unique
+  password  String
+  createdAt DateTime   @default(now())
+  vitamins  Vitamin[]
+  schedules Schedule[]
+}
+
+model Vitamin {
+  id        Int        @id @default(autoincrement())
+  name      String
+  userId    Int
+  user      User       @relation(fields: [userId], references: [id])
+  createdAt DateTime   @default(now())
+  schedules Schedule[]
+}
+
+model Schedule {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  vitaminId Int
+  dayOfWeek Int
+  time      String
+  user      User     @relation(fields: [userId], references: [id])
+  vitamin   Vitamin  @relation(fields: [vitaminId], references: [id])
+  createdAt DateTime @default(now())
+}
